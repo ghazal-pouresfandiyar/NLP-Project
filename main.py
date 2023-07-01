@@ -104,8 +104,8 @@ def calculate_p(test, unigrams, bigrams):
     print("total =",total)
 
 # main
-# file = "corpus.txt"
-file = "a.txt"
+file = "corpus.txt"
+
 unigrams = extract_unigrams(file)
 bigrams = extract_bigrams(file)
 

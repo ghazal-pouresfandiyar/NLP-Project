@@ -1,2 +1,5 @@
-<s> the quick person did not realize his speed and the quick person bumped. </s>
-<s> i am ghazal prs and ghazal prs is me.</s>
+<s> I am Sam </s>
+<s> Sam i am </s>
+<s> I do not like green eggs and ham</s>
+<s> the quick person did not realize his speed and the quick person bumped </s>
+<s> i am ghazal prs and ghazal prs is me</s>
