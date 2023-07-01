@@ -32,7 +32,6 @@ def change_unigram_format(unigrams):
 
 def extract_unigrams(file):
     words = re.findall('\w+|<s>|</s>', open(file).read().lower())
-    print(words)
     unigrams = change_unigram_format(dict(Counter(ngrams(words, 1))))
     return unigrams
 
@@ -57,11 +56,13 @@ def print_bigrams(bigrams):
         print(10*" " ,i , " ---> "+str(bigrams[i]))
         
 # probability of hapenning "b a" in sentence
-# add 1 to numerator for smoothing
-# add |v| to denominator for smoothing
 def p(a, b, unigrams, bigrams):
-    numerator = cba(b,a,bigrams)+1
-    denominator = cb(b,unigrams)+len(unigrams.keys())
+    # add 1 to numerator for smoothing
+    # add |v| to denominator for smoothing
+    # numerator = cba(b,a,bigrams)+1
+    # denominator = cb(b,unigrams)+len(unigrams.keys())
+    numerator = cba(b,a,bigrams)
+    denominator = cb(b,unigrams)
     return numerator/denominator
 
 # count "b a" in corpus
@@ -83,7 +84,9 @@ def random_sentence(n, unigrams):
     test = []
     test.append("<s>")
     for i in range(length):
-        rand_word = random.choice(list(unigrams.keys()))
+        rand_word = "<s>"
+        while(rand_word == "<s>" or rand_word == "</s>"):
+            rand_word = random.choice(list(unigrams.keys()))
         test.append(rand_word)
     test.append("</s>")
     print("The test sentences is :", end=" ")
