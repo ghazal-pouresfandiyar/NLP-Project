@@ -1,6 +1,7 @@
 from itertools import tee, islice
 import re
 from collections import Counter
+from random import *
 
 # calculate ngrams
 def ngrams(lst, n):
@@ -29,11 +30,14 @@ def change_unigram_format(unigrams):
     new_unigrams = dict(zip(new_keys, new_values))
     return new_unigrams
 
+
 def extract_unigrams(file):
     words = re.findall('\w+', open(file).read())
-
-    print("------------------Unigram values------------------")
     unigrams = change_unigram_format(dict(Counter(ngrams(words, 1))))
+    return unigrams
+
+def print_unigrams(unigrams):
+    print("------------------Unigram values------------------")  
     keys = unigrams.keys()
     values = unigrams.values()
     for i in keys:
@@ -41,14 +45,24 @@ def extract_unigrams(file):
 
 def extract_bigrams(file):
     words = re.findall('\w+', open(file).read())
-    print("------------------Bigram  values------------------")
     bigrams = dict(Counter(ngrams(words, 2)))
+    return bigrams
+
+def print_bigrams(bigrams):
+    print("------------------Bigram  values------------------")
     keys = bigrams.keys()
     values = bigrams.values()
     for i in keys:
         print(10*" " ,i , " ---> "+str(bigrams[i]))
 
-extract_unigrams('a.txt')
-extract_bigrams('a.txt')
+
+# main
+# part 1
+unigrams = extract_unigrams('a.txt')
+bigrams = extract_bigrams('a.txt')
+print_unigrams(unigrams)
+print_bigrams(bigrams)
+
+length = randint(1,5)
 
 
