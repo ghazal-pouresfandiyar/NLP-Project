@@ -1,10 +1,8 @@
 from itertools import tee, islice
 import re
 from collections import Counter
-import json
-import numpy
 
-# extract ngrams from a text
+# calculate ngrams
 def ngrams(lst, n):
   tlst = lst
   while True:
@@ -31,19 +29,26 @@ def change_unigram_format(unigrams):
     new_unigrams = dict(zip(new_keys, new_values))
     return new_unigrams
 
-# main oart of the code
-words = re.findall('\w+', open('a.txt').read())
+def extract_unigrams(file):
+    words = re.findall('\w+', open(file).read())
 
-print("------------------Unigram values------------------")
-unigrams = change_unigram_format(dict(Counter(ngrams(words, 1))))
-keys = unigrams.keys()
-values = unigrams.values()
-for i in keys:
-    print(15*" " + i + " ---> "+str(unigrams[i]))
+    print("------------------Unigram values------------------")
+    unigrams = change_unigram_format(dict(Counter(ngrams(words, 1))))
+    keys = unigrams.keys()
+    values = unigrams.values()
+    for i in keys:
+        print(15*" " + i + " ---> "+str(unigrams[i]))
 
-print("------------------Bigram  values------------------")
-bigrams = dict(Counter(ngrams(words, 2)))
-keys = bigrams.keys()
-values = bigrams.values()
-for i in keys:
-    print(10*" " ,i , " ---> "+str(bigrams[i]))
+def extract_bigrams(file):
+    words = re.findall('\w+', open(file).read())
+    print("------------------Bigram  values------------------")
+    bigrams = dict(Counter(ngrams(words, 2)))
+    keys = bigrams.keys()
+    values = bigrams.values()
+    for i in keys:
+        print(10*" " ,i , " ---> "+str(bigrams[i]))
+
+extract_unigrams('a.txt')
+extract_bigrams('a.txt')
+
+
