@@ -1,7 +1,7 @@
 from itertools import tee, islice
 import re
 from collections import Counter
-from random import *
+import random
 
 # calculate ngrams
 def ngrams(lst, n):
@@ -30,9 +30,9 @@ def change_unigram_format(unigrams):
     new_unigrams = dict(zip(new_keys, new_values))
     return new_unigrams
 
-
 def extract_unigrams(file):
-    words = re.findall('\w+', open(file).read())
+    words = re.findall('\w+|<s>|</s>', open(file).read().lower())
+    print(words)
     unigrams = change_unigram_format(dict(Counter(ngrams(words, 1))))
     return unigrams
 
@@ -44,8 +44,9 @@ def print_unigrams(unigrams):
         print(15*" " + i + " ---> "+str(unigrams[i]))
 
 def extract_bigrams(file):
-    words = re.findall('\w+', open(file).read())
+    words = re.findall('\w+|<s>|</s>', open(file).read().lower())
     bigrams = dict(Counter(ngrams(words, 2)))
+    del bigrams[("</s>", "<s>")]
     return bigrams
 
 def print_bigrams(bigrams):
@@ -54,15 +55,65 @@ def print_bigrams(bigrams):
     values = bigrams.values()
     for i in keys:
         print(10*" " ,i , " ---> "+str(bigrams[i]))
+        
+# probability of hapenning "b a" in sentence
+# add 1 to numerator for smoothing
+# add |v| to denominator for smoothing
+def p(a, b, unigrams, bigrams):
+    numerator = cba(b,a,bigrams)+1
+    denominator = cb(b,unigrams)+len(unigrams.keys())
+    return numerator/denominator
 
+# count "b a" in corpus
+def cba(b, a, bigrams):
+    t = (b, a)
+    result = 0
+    try:
+        result = bigrams[t]
+    except:
+        result = 0
+    return result
+
+# count b in corpus
+def cb(b, unigrams):
+    return unigrams[b]
+
+def random_sentence(n, unigrams):
+    length = random.randint(1,n)
+    test = []
+    test.append("<s>")
+    for i in range(length):
+        rand_word = random.choice(list(unigrams.keys()))
+        test.append(rand_word)
+    test.append("</s>")
+    print("The test sentences is :", end=" ")
+    for i in test:
+        print(i, end = " ")
+    print()
+    return test
+
+def calculate_p(test, unigrams, bigrams):
+    total = 1
+    for i in range(len(test)-1):
+        temp_p = p(test[i], test[i+1], unigrams, bigrams)
+        total = total * temp_p
+        print("p("+test[i+1]+"|"+test[i]+") = ", temp_p)
+    print("total =",total)
 
 # main
+# file = "corpus.txt"
+file = "a.txt"
+unigrams = extract_unigrams(file)
+bigrams = extract_bigrams(file)
+
 # part 1
-unigrams = extract_unigrams('a.txt')
-bigrams = extract_bigrams('a.txt')
 print_unigrams(unigrams)
 print_bigrams(bigrams)
 
-length = randint(1,5)
+# part2
+test = random_sentence(5, unigrams)
+calculate_p(test, unigrams, bigrams)
+
+
 
 
