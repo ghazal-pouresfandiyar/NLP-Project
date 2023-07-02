@@ -16,6 +16,17 @@ def ngrams(lst, n):
     else:
       break
 
+def extract_unigrams(file):
+    words = re.findall('\w+|<s>|</s>', open(file).read().lower())
+    unigrams = change_unigram_format(dict(Counter(ngrams(words, 1))))
+    return unigrams
+
+def extract_bigrams(file):
+    words = re.findall('\w+|<s>|</s>', open(file).read().lower())
+    bigrams = dict(Counter(ngrams(words, 2)))
+    del bigrams[("</s>", "<s>")]
+    return bigrams
+       
 # change (tuple as key ---> value) to (srt as key ---> value) for unigram
 def change_unigram_format(unigrams):
     keys = unigrams.keys()
@@ -30,23 +41,12 @@ def change_unigram_format(unigrams):
     new_unigrams = dict(zip(new_keys, new_values))
     return new_unigrams
 
-def extract_unigrams(file):
-    words = re.findall('\w+|<s>|</s>', open(file).read().lower())
-    unigrams = change_unigram_format(dict(Counter(ngrams(words, 1))))
-    return unigrams
-
 def print_unigrams(unigrams):
     print("------------------Unigram values------------------")  
     keys = unigrams.keys()
     values = unigrams.values()
     for i in keys:
         print(15*" " + i + " ---> "+str(unigrams[i]))
-
-def extract_bigrams(file):
-    words = re.findall('\w+|<s>|</s>', open(file).read().lower())
-    bigrams = dict(Counter(ngrams(words, 2)))
-    del bigrams[("</s>", "<s>")]
-    return bigrams
 
 def print_bigrams(bigrams):
     print("------------------Bigram  values------------------")
@@ -56,13 +56,11 @@ def print_bigrams(bigrams):
         print(10*" " ,i , " ---> "+str(bigrams[i]))
         
 # probability of hapenning "b a" in sentence
+# add 1 to numerator for smoothing
+# add |v| to denominator for smoothing
 def p(a, b, unigrams, bigrams):
-    # add 1 to numerator for smoothing
-    # add |v| to denominator for smoothing
-    # numerator = cba(b,a,bigrams)+1
-    # denominator = cb(b,unigrams)+len(unigrams.keys())
-    numerator = cba(b,a,bigrams)
-    denominator = cb(b,unigrams)
+    numerator = cba(b,a,bigrams)+1
+    denominator = cb(b,unigrams)+len(unigrams.keys())
     return numerator/denominator
 
 # count "b a" in corpus
